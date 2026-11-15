@@ -7,447 +7,420 @@
 <meta name="description" content="Samodh (Sam) Salwathura: remote technical operations and virtual assistant based in Galle, Sri Lanka. Operations, automation, lead research, Google Sheets and AI-assisted workflows.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* Layout: a coastal railway timetable. Departure board hero, career as stations on a line, projects as tickets. */
-  --paper:#EDF0F5;
-  --plate:#FFFFFF;
-  --ink:#0B1B3F;
-  --soft:#55607A;
-  --rule:#C9D0DC;
-  --signal:#F5B700;
-  --rail:#D7263D;
-  --board:#0B1B3F;
-  --board-ink:#F5B700;
-  --display:"Archivo", "Arial Narrow", system-ui, sans-serif;
-  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
-  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+  /* Layout: single editorial column; sticky top bar; content in ruled rows, no cards */
+  --bg:#F7F8FA;
+  --surface:#FFFFFF;
+  --ink:#111827;
+  --muted:#5B6474;
+  --rule:#E2E5EA;
+  --accent:#1F4FD8;
+  --accent-soft:#E8EEFC;
+  --display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --body:"Geist", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono:"Geist Mono", ui-monospace, Menlo, monospace;
+  --max:1120px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --paper:#071029; --plate:#0E1A3A; --ink:#EDF0F5; --soft:#97A2BC; --rule:#22305A;
-    --signal:#FFC72C; --rail:#FF5468; --board:#020817; --board-ink:#FFC72C;
-    color-scheme: dark;
+    --bg:#0D1117; --surface:#141A23; --ink:#E9ECF1; --muted:#9AA3B2; --rule:#232B37;
+    --accent:#7DA2FF; --accent-soft:#18233D; color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
-  --paper:#071029; --plate:#0E1A3A; --ink:#EDF0F5; --soft:#97A2BC; --rule:#22305A;
-  --signal:#FFC72C; --rail:#FF5468; --board:#020817; --board-ink:#FFC72C;
-  color-scheme: dark;
+  --bg:#0D1117; --surface:#141A23; --ink:#E9ECF1; --muted:#9AA3B2; --rule:#232B37;
+  --accent:#7DA2FF; --accent-soft:#18233D; color-scheme: dark;
 }
 
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 html,body{margin:0}
-body{background:var(--paper);color:var(--ink);font:17px/1.6 var(--body)}
-a{color:inherit}
-a:focus-visible,button:focus-visible{outline:3px solid var(--signal);outline-offset:3px}
-h1,h2,h3{font-family:var(--display);margin:0;line-height:1;text-wrap:balance}
-.mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
-.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+body{background:var(--bg);color:var(--ink);font:16px/1.65 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+h1,h2,h3{margin:0;font-weight:400;text-wrap:balance}
+p{margin:0}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 clamp(16px,4vw,32px)}
+.label{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 
-/* Scroll progress: a train on the rail */
-.track{position:fixed;left:0;right:0;top:0;height:6px;background:repeating-linear-gradient(90deg,var(--ink) 0 10px,transparent 10px 16px);opacity:.25;z-index:60}
-.train{position:fixed;top:0;left:0;height:6px;width:100%;background:var(--signal);transform-origin:0 50%;transform:scaleX(0);z-index:61}
+.progress{position:fixed;top:0;left:0;right:0;height:2px;background:var(--accent);transform-origin:0 50%;transform:scaleX(0);z-index:60}
 
-/* Top strip */
-.strip{background:var(--board);color:var(--board-ink);font-family:var(--mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
-.strip .wrap{display:flex;flex-wrap:wrap;gap:8px 28px;justify-content:space-between;padding-top:14px;padding-bottom:12px}
-.strip b{color:#fff;font-weight:700}
-:root[data-theme="dark"] .strip b{color:var(--ink)}
-.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#3DDC84;margin-right:8px;vertical-align:1px;animation:blinkdot 1.6s infinite}
-@keyframes blinkdot{50%{opacity:.25}}
+.nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid transparent;transition:border-color .3s ease}
+.nav.scrolled{border-bottom-color:var(--rule)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.brand{font:400 22px var(--display);letter-spacing:.01em;white-space:nowrap}
+.links{display:flex;align-items:center;gap:28px;font-size:14.5px;color:var(--muted)}
+.links a.nav-link{position:relative;padding:4px 0}
+.links a.nav-link::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+.links a.nav-link:hover{color:var(--ink)}
+.links a.nav-link:hover::after{transform:scaleX(1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 14.5px var(--body);padding:11px 18px;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer;transition:transform .2s ease,background .2s ease,color .2s ease,border-color .2s ease;white-space:nowrap}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
+.btn.ghost:hover{border-color:var(--ink)}
+.btn svg{width:16px;height:16px}
+.nav .btn{padding:9px 16px;font-size:14px}
 
-/* Hero */
-.hero{padding:64px 0 40px;border-bottom:3px solid var(--ink)}
-.hero .kicker{color:var(--rail);margin-bottom:18px;display:block}
-.name{font-size:clamp(46px,10vw,132px);font-weight:900;font-variation-settings:"wdth" 125;letter-spacing:-.02em;text-transform:uppercase;line-height:.88}
-.name span{display:block}
-.name .second{color:transparent;-webkit-text-stroke:2px var(--ink)}
-.role{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 22px;margin-top:26px}
-.role h2{font-size:clamp(20px,2.4vw,28px);font-weight:700;font-variation-settings:"wdth" 100}
-.role .mono{color:var(--soft)}
+.hero{padding:clamp(48px,9vw,112px) 0 clamp(40px,6vw,72px)}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin-bottom:28px}
+.chip{display:inline-flex;align-items:center;gap:8px;font:500 13px var(--body);color:var(--accent);background:var(--accent-soft);padding:6px 12px;border-radius:999px}
+.chip i{width:7px;height:7px;border-radius:50%;background:var(--accent);position:relative}
+.chip i::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid var(--accent);animation:ping 2s ease-out infinite}
+@keyframes ping{from{transform:scale(.4);opacity:.9}to{transform:scale(1.6);opacity:0}}
+.meta .label{font-variant-numeric:tabular-nums}
+.hero h1{font-family:var(--display);font-size:clamp(42px,7.4vw,96px);line-height:1.04;letter-spacing:-.015em;max-width:15ch}
+.swap{display:inline-grid;vertical-align:bottom;overflow:hidden;height:1.12em}
+.swap span{grid-area:1/1;font-style:italic;color:var(--accent);transition:transform .7s cubic-bezier(.65,0,.35,1),opacity .7s ease;white-space:nowrap}
+.swap span.out{transform:translateY(-105%);opacity:0}
+.swap span.in{transform:translateY(105%);opacity:0}
+.lede{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(24px,5vw,64px);margin-top:clamp(32px,5vw,56px);align-items:end}
+.lede p{font-size:clamp(17px,1.6vw,19px);color:var(--muted);max-width:56ch}
+.lede p strong{color:var(--ink);font-weight:500}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule)}
+.stat{padding:18px 0 0}
+.stat + .stat{padding-left:18px;border-left:1px solid var(--rule)}
+.stat strong{display:block;font:400 clamp(34px,4vw,46px)/1 var(--display);font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:8px;font-size:13.5px;color:var(--muted);line-height:1.4}
 
-/* Departure board */
-.board{margin-top:34px;background:var(--board);border-radius:6px;padding:18px 20px;display:grid;grid-template-columns:auto 1fr;gap:6px 22px;align-items:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-.board .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7F8BA8}
-.flaps{display:flex;flex-wrap:wrap;gap:3px;min-height:46px}
-.flap{display:inline-grid;place-items:center;width:clamp(16px,2.1vw,28px);height:clamp(30px,3.4vw,44px);background:#16244A;color:var(--board-ink);font:700 clamp(15px,2vw,26px) var(--mono);border-radius:3px;position:relative;text-transform:uppercase}
-.flap::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.55)}
-.flap.sp{background:transparent}
-.flap.flip{animation:flip .12s linear}
-@keyframes flip{0%{transform:scaleY(1)}50%{transform:scaleY(.1)}100%{transform:scaleY(1)}}
+section{padding:clamp(56px,8vw,96px) 0;border-top:1px solid var(--rule)}
+.shead{display:grid;grid-template-columns:240px 1fr;gap:clamp(16px,4vw,48px);margin-bottom:clamp(28px,4vw,44px);align-items:baseline}
+.shead h2{font-family:var(--display);font-size:clamp(34px,4.4vw,52px);line-height:1.05;letter-spacing:-.01em}
 
-.intro{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;margin-top:40px;align-items:start}
-.intro p{margin:0;font-size:19px;max-width:58ch}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);border:2px solid var(--ink)}
-.stat{padding:14px 14px 12px;border-right:2px solid var(--ink)}
-.stat:last-child{border-right:0}
-.stat strong{display:block;font:900 34px var(--display);font-variation-settings:"wdth" 112;font-variant-numeric:tabular-nums}
-.stat span{font-size:13px;color:var(--soft);line-height:1.3;display:block;margin-top:4px}
+.services{display:grid;grid-template-columns:repeat(3,1fr);gap:0 clamp(20px,3vw,40px)}
+.svc{padding:22px 0 26px;border-top:1px solid var(--ink)}
+.svc .label{display:block;margin-bottom:14px}
+.svc h3{font:500 18px var(--body);margin-bottom:8px}
+.svc p{color:var(--muted);font-size:15px}
 
-/* Section headers */
-section.block{padding:72px 0 0}
-.shead{display:grid;grid-template-columns:120px 1fr;gap:20px;align-items:end;margin-bottom:28px}
-.shead .mono{color:var(--rail);padding-bottom:6px;border-bottom:3px solid var(--rail)}
-.shead h2{font-size:clamp(30px,4.6vw,56px);font-weight:900;font-variation-settings:"wdth" 118;text-transform:uppercase;padding-bottom:4px;border-bottom:3px solid var(--ink)}
+.jobs{border-top:1px solid var(--rule)}
+.job{display:grid;grid-template-columns:240px 1fr;gap:clamp(16px,4vw,48px);padding:28px 0;border-bottom:1px solid var(--rule)}
+.job .when{font:400 14px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums;padding-top:4px}
+.job .when b{display:inline-block;margin-top:8px;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:3px 8px;border-radius:999px}
+.job h3{font-family:var(--display);font-size:clamp(24px,2.6vw,30px);line-height:1.15}
+.job .org{color:var(--muted);margin:4px 0 14px;font-size:15px}
+.job .org a{color:var(--accent);border-bottom:1px solid currentColor}
+.job ul{margin:0;padding:0;list-style:none;display:grid;gap:8px;max-width:68ch}
+.job li{position:relative;padding-left:20px;font-size:15.5px}
+.job li::before{content:"";position:absolute;left:0;top:.8em;width:10px;height:1px;background:var(--muted)}
 
-/* Services as timetable rows */
-.rows{border-top:2px solid var(--ink)}
-.row{position:relative;display:grid;grid-template-columns:120px 1fr 1.4fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--rule);isolation:isolate}
-.row::before{content:"";position:absolute;inset:0;background:var(--signal);transform:scaleX(0);transform-origin:0 50%;transition:transform .35s cubic-bezier(.2,.7,.2,1);z-index:-1}
-.row:hover::before{transform:scaleX(1)}
-.row:hover, .row:hover .rdesc, .row:hover .rcode{color:#0B1B3F}
-.rcode{font-family:var(--mono);font-weight:700;color:var(--soft);padding-left:8px}
-.row h3{font-size:22px;font-weight:800;font-variation-settings:"wdth" 108}
-.rdesc{margin:0;color:var(--soft);padding-right:8px}
+.work{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.4vw,28px)}
+.item{display:flex;flex-direction:column;gap:10px;padding:24px;background:var(--surface);border:1px solid var(--rule);border-radius:4px;transition:border-color .3s ease,transform .3s ease,box-shadow .3s ease}
+.item:hover{border-color:var(--ink);transform:translateY(-4px);box-shadow:0 18px 40px -28px rgba(17,24,39,.45)}
+.item h3{font-family:var(--display);font-size:26px;line-height:1.15}
+.item p{color:var(--muted);font-size:15px;flex:1}
+.item .go{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:500;color:var(--accent);margin-top:6px}
+.item .go svg{width:14px;height:14px;transition:transform .25s ease}
+.item:hover .go svg{transform:translate(3px,-3px)}
 
-/* Rail line experience */
-.line{position:relative;padding-left:150px}
-.line::before{content:"";position:absolute;left:118px;top:6px;bottom:6px;width:6px;background:var(--rule);border-radius:3px}
-.line .fill{position:absolute;left:118px;top:6px;bottom:6px;width:6px;background:var(--rail);border-radius:3px;transform-origin:50% 0}
-.stop{position:relative;padding:0 0 44px}
-.stop:last-child{padding-bottom:0}
-.stop::before{content:"";position:absolute;left:-38px;top:4px;width:18px;height:18px;border-radius:50%;background:var(--paper);border:5px solid var(--rail)}
-.stop.now::before{background:var(--signal);border-color:var(--ink)}
-.when{position:absolute;left:-150px;top:2px;width:96px;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--soft);line-height:1.4}
-.stop h3{font-size:clamp(22px,2.6vw,30px);font-weight:900;font-variation-settings:"wdth" 112;text-transform:uppercase}
-.where{font-family:var(--mono);font-size:13px;color:var(--rail);margin:6px 0 12px;letter-spacing:.03em}
-.where a{color:var(--rail)}
-.badge{display:inline-block;font:700 11px var(--mono);letter-spacing:.08em;background:var(--signal);color:#0B1B3F;padding:3px 7px;margin-left:10px;vertical-align:middle;text-transform:uppercase}
-.stop ul{margin:0;padding-left:18px;display:grid;gap:5px;max-width:70ch}
+.skills{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(20px,3vw,40px)}
+.skills h3{font:500 15px var(--body);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--rule)}
+.skills ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;color:var(--muted);font-size:15px}
 
-/* Tickets */
-.tickets{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.ticket{position:relative;background:var(--plate);display:grid;grid-template-rows:auto 1fr auto;border:2px solid var(--ink);transition:transform .3s cubic-bezier(.2,.7,.2,1)}
-.ticket:hover{transform:rotate(-1.2deg) translateY(-6px)}
-.ticket .top{display:flex;justify-content:space-between;padding:12px 16px;background:var(--ink);color:var(--paper);font:700 12px var(--mono);letter-spacing:.08em;text-transform:uppercase}
-.ticket .body{padding:18px 16px 16px}
-.ticket h3{font-size:24px;font-weight:900;font-variation-settings:"wdth" 110;text-transform:uppercase;margin-bottom:8px}
-.ticket p{margin:0;color:var(--soft);font-size:15.5px}
-.ticket .stub{position:relative;border-top:2px dashed var(--ink);padding:12px 16px;font:700 12px var(--mono);display:flex;justify-content:space-between;gap:10px;text-transform:uppercase;letter-spacing:.06em}
-.ticket .stub::before,.ticket .stub::after{content:"";position:absolute;top:-11px;width:20px;height:20px;border-radius:50%;background:var(--paper);border:2px solid var(--ink)}
-.ticket .stub::before{left:-12px;clip-path:inset(0 0 0 50%)}
-.ticket .stub::after{right:-12px;clip-path:inset(0 50% 0 0)}
-.ticket a{color:var(--rail)}
+.edu h3{font-family:var(--display);font-size:clamp(26px,3vw,34px);line-height:1.1}
+.edu .org{color:var(--muted);margin:6px 0 14px}
+.edu p{max-width:66ch;color:var(--muted)}
 
-/* Ticker */
-.ticker{margin-top:72px;background:var(--board);color:var(--board-ink);overflow:hidden;border-top:3px solid var(--signal);border-bottom:3px solid var(--signal)}
-.tick-inner{display:flex;width:max-content;animation:ticker 38s linear infinite}
-.ticker:hover .tick-inner{animation-play-state:paused}
-.tick-inner span{font:700 15px var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:16px 26px;white-space:nowrap}
-.tick-inner span::after{content:"◆";margin-left:52px;color:var(--rail)}
-@keyframes ticker{to{transform:translateX(-50%)}}
+.contact h2{font-family:var(--display);font-size:clamp(40px,6.4vw,84px);line-height:1.04;letter-spacing:-.015em;max-width:16ch;margin-top:16px}
+.contact h2 em{color:var(--accent)}
+.contact .cta{margin-top:32px}
+.channels{display:grid;grid-template-columns:repeat(3,1fr);gap:0 clamp(16px,3vw,40px);margin-top:clamp(36px,5vw,56px);border-top:1px solid var(--rule)}
+.channels a{display:block;padding:18px 0}
+.channels .label{display:block;margin-bottom:6px}
+.channels .v{font-size:15.5px;word-break:break-word;transition:color .2s ease}
+.channels a:hover .v{color:var(--accent)}
+.toast{font-size:14px;color:var(--accent);min-height:1.3em;margin-top:12px}
+footer{border-top:1px solid var(--rule);padding:24px 0 40px;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 
-/* Education */
-.edu{display:grid;grid-template-columns:120px 1fr;gap:20px;border-top:2px solid var(--ink);padding-top:20px}
-.edu .when{position:static;width:auto}
-.edu h3{font-size:26px;font-weight:900;font-variation-settings:"wdth" 110;text-transform:uppercase}
-.edu p{margin:10px 0 0;color:var(--soft);max-width:66ch}
-
-/* Contact */
-.contact{margin:80px 0 0;background:var(--signal);color:#0B1B3F;padding:48px 0 40px}
-.contact h2{font-size:clamp(36px,6vw,80px);font-weight:900;font-variation-settings:"wdth" 122;text-transform:uppercase;line-height:.92}
-.contact p{max-width:52ch;margin:16px 0 26px;font-size:18px}
-.btns{display:flex;flex-wrap:wrap;gap:12px}
-.btn{display:inline-flex;align-items:center;gap:10px;font:700 15px var(--mono);letter-spacing:.04em;text-transform:uppercase;text-decoration:none;padding:14px 18px;border:2px solid #0B1B3F;color:#0B1B3F;background:transparent;cursor:pointer;transition:transform .2s ease, box-shadow .2s ease}
-.btn.solid{background:#0B1B3F;color:#F5B700}
-.btn:hover{transform:translate(-3px,-3px);box-shadow:4px 4px 0 #0B1B3F}
-.toast{font:700 13px var(--mono);margin-top:14px;min-height:1.2em}
-.contact .details{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:22px;font:700 13px var(--mono)}
-footer{padding:22px 0 40px;font-family:var(--mono);font-size:12px;color:var(--soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-
-/* Load + scroll motion */
-@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
-.load{animation:up .7s cubic-bezier(.2,.7,.2,1) both}
-.l1{animation-delay:.05s}.l2{animation-delay:.15s}.l3{animation-delay:.25s}.l4{animation-delay:.35s}.l5{animation-delay:.45s}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.load{animation:up .8s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.15s}.d3{animation-delay:.25s}.d4{animation-delay:.35s}
 @supports (animation-timeline: view()){
-  @keyframes rise{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
-  .reveal{animation:rise linear both;animation-timeline:view();animation-range:entry 0% cover 25%}
-  @keyframes draw{from{transform:scaleY(0)}to{transform:scaleY(1)}}
-  .line .fill{animation:draw linear both;animation-timeline:view();animation-range:entry 10% exit 60%}
-  @keyframes go{to{transform:scaleX(1)}}
-  .train{animation:go linear both;animation-timeline:scroll(root)}
+  @keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+  .reveal{animation:rise linear both;animation-timeline:view();animation-range:entry 0% cover 22%}
+  @keyframes grow{to{transform:scaleX(1)}}
+  .progress{animation:grow linear both;animation-timeline:scroll(root)}
 }
 
-@media (max-width: 860px){
-  .intro{grid-template-columns:1fr}
-  .tickets{grid-template-columns:1fr}
-  .row{grid-template-columns:70px 1fr}
-  .row .rdesc{grid-column:2}
-  .shead{grid-template-columns:1fr;gap:6px}
-  .shead .mono{border-bottom:0;padding-bottom:0}
-  .edu{grid-template-columns:1fr;gap:4px}
+@media (max-width: 960px){
+  .services,.work{grid-template-columns:1fr 1fr}
+  .skills{grid-template-columns:1fr 1fr}
+  .shead,.job{grid-template-columns:180px 1fr}
+}
+@media (max-width: 760px){
+  .links .hide-sm{display:none}
+  .lede{grid-template-columns:1fr}
+  .shead,.job{grid-template-columns:1fr;gap:8px}
+  .job .when{padding-top:0}
+  .job .when br{display:none}
+  .job .when b{margin:0 0 0 8px;vertical-align:1px}
+  .channels{grid-template-columns:1fr}
+  .channels a{border-bottom:1px solid var(--rule)}
 }
 @media (max-width: 560px){
-  .wrap{padding:0 16px}
-  .line{padding-left:44px}
-  .line::before,.line .fill{left:12px}
-  .stop::before{left:-38px}
-  .when{position:static;display:block;width:auto;margin-bottom:6px}
-  .board{grid-template-columns:1fr}
-  .stat strong{font-size:26px}
-  .hero{padding-top:44px}
-  .name .second{-webkit-text-stroke:1.5px var(--ink)}
+  .services,.work,.skills{grid-template-columns:1fr}
+  .links .nav-link{display:none}
+  .brand{font-size:20px}
+  .stat + .stat{padding-left:12px}
+  .stat span{font-size:12.5px}
+  .cta .btn{flex:1 1 auto}
+  .item{padding:20px}
 }
 @media (prefers-reduced-motion: reduce){
-  .load,.reveal,.line .fill,.train,.dot,.tick-inner,.flap.flip{animation:none!important}
-  .train{display:none}
-  .tick-inner{flex-wrap:wrap;width:auto}
-  .row::before,.ticket,.btn{transition:none!important}
+  html{scroll-behavior:auto}
+  .load,.reveal,.progress,.chip i::after{animation:none!important}
+  .progress{display:none}
+  .swap span,.btn,.item,.links a::after{transition:none!important}
 }
 </style>
 </head>
 <body>
-<div class="track" aria-hidden="true"></div>
-<div class="train" id="train" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"></div>
 
-<div class="strip">
+<nav class="nav" id="nav" aria-label="Main">
   <div class="wrap">
-    <span><span class="dot" aria-hidden="true"></span>Status: <b>Open to remote work</b></span>
-    <span>Galle, Sri Lanka · <b id="clock">GMT+5:30</b></span>
-    <span>Serving: <b>Canada · USA · Remote</b></span>
+    <a class="brand" href="#top">Samodh Salwathura</a>
+    <div class="links">
+      <a class="nav-link hide-sm" href="#services">Services</a>
+      <a class="nav-link" href="#experience">Experience</a>
+      <a class="nav-link hide-sm" href="#work">Work</a>
+      <a class="btn" href="#contact">Contact</a>
+    </div>
   </div>
-</div>
+</nav>
 
-<header class="hero">
+<header class="hero" id="top">
   <div class="wrap">
-    <span class="mono kicker load l1">Technical Operations &amp; Virtual Assistant</span>
-    <h1 class="name load l2"><span>Samodh</span><span class="second">Salwathura</span></h1>
-    <div class="role load l3">
-      <h2>I keep remote teams running.</h2>
-      <span class="mono">Goes by Sam</span>
+    <div class="meta load d1">
+      <span class="chip"><i aria-hidden="true"></i>Available for remote work</span>
+      <span class="label">Galle, Sri Lanka · <span id="clock">GMT+5:30</span></span>
     </div>
-
-    <div class="board load l4" aria-label="What I do">
-      <span class="lbl">Now boarding</span>
-      <div class="flaps" id="flaps" aria-live="off">
-        <span class="sr" style="position:absolute;left:-9999px" id="flapText">Automate the boring parts</span>
+    <h1 class="load d2">Technical operations that keep remote teams <span class="swap" id="swap"><span>running.</span></span></h1>
+    <div class="lede">
+      <div class="load d3">
+        <p><strong>I'm Sam, a technical operations and virtual assistant.</strong> Since 2024 I've handled day-to-day operations for a Canadian company: forms, workflows, payroll systems, reports, client emails and a company website. I'm an IT graduate with a data science background, and I use AI the right way: to speed up research, writing and automation, while I check everything it produces.</p>
+        <div class="cta">
+          <a class="btn" href="mailto:samodhsala88@gmail.com">Email me</a>
+          <a class="btn ghost" href="https://www.linkedin.com/in/samodh-salwathura-021646206/"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.22 8.02h4.56V23H.22V8.02zM8.33 8.02h4.37v2.05h.06c.61-1.15 2.1-2.36 4.32-2.36 4.62 0 5.47 3.04 5.47 6.99V23h-4.55v-7.27c0-1.73-.03-3.96-2.41-3.96-2.42 0-2.79 1.89-2.79 3.84V23H8.33V8.02z"/></svg>LinkedIn</a>
+        </div>
       </div>
-    </div>
-
-    <div class="intro load l5">
-      <p>Since 2024 I've handled day-to-day technical operations for a Canadian company from Sri Lanka: forms, workflows, payroll systems, reports, client emails and a company website. I'm an IT graduate with a data science background, and I use AI the right way: to speed up research, writing and automation, while I check everything it produces.</p>
-      <div class="stats">
+      <div class="stats load d4">
         <div class="stat"><strong data-count="50" data-suffix="+">50+</strong><span>staff use systems I built, daily</span></div>
-        <div class="stat"><strong data-count="2" data-suffix="+ yrs">2+ yrs</strong><span>remote ops for a Canadian company</span></div>
-        <div class="stat"><strong data-count="4" data-suffix="+ yrs">4+ yrs</strong><span>in IT, from ERP code to no-code</span></div>
+        <div class="stat"><strong data-count="2" data-suffix="+">2+</strong><span>years of remote ops for a Canadian company</span></div>
+        <div class="stat"><strong data-count="4" data-suffix="+">4+</strong><span>years in IT, from ERP code to no-code</span></div>
       </div>
     </div>
   </div>
 </header>
 
 <main>
-  <section class="block" aria-labelledby="h-services">
+  <section id="services" aria-labelledby="h-services">
     <div class="wrap">
-      <div class="shead reveal"><span class="mono">Timetable</span><h2 id="h-services">What I handle</h2></div>
-      <div class="rows">
-        <div class="row reveal"><span class="rcode">OPS</span><h3>Operations &amp; admin</h3><p class="rdesc">Inbox management, client replies, calendars and invoice reminders, with AI-assisted drafting for faster, consistent emails.</p></div>
-        <div class="row reveal"><span class="rcode">LDS</span><h3>Research &amp; lead lists</h3><p class="rdesc">Finding and qualifying companies and contacts with AI-assisted research, then organising them into clean, deduplicated Google Sheets.</p></div>
-        <div class="row reveal"><span class="rcode">AUT</span><h3>Automation</h3><p class="rdesc">Jotform, monday.com and Google Apps Script workflows, plus custom AI-assisted scripts, to remove repetitive manual work.</p></div>
-        <div class="row reveal"><span class="rcode">DAT</span><h3>Data &amp; reporting</h3><p class="rdesc">Weekly reports, payroll data and tracking sheets, using AI to speed up data cleanup and formula building, with every output reviewed.</p></div>
-        <div class="row reveal"><span class="rcode">MKT</span><h3>Outreach &amp; promotion</h3><p class="rdesc">Creator, community and newsletter outreach, ad materials and campaign tracking for client launches.</p></div>
+      <div class="shead reveal"><span class="label">Services</span><h2 id="h-services">What I can take off your plate</h2></div>
+      <div class="services">
+        <div class="svc reveal"><span class="label">01</span><h3>Operations &amp; admin</h3><p>Inbox management, client replies, calendars and invoice reminders, with AI-assisted drafting for faster, consistent emails.</p></div>
+        <div class="svc reveal"><span class="label">02</span><h3>Research &amp; lead lists</h3><p>Finding and qualifying companies and contacts with AI-assisted research, then organising them into clean, deduplicated Google Sheets.</p></div>
+        <div class="svc reveal"><span class="label">03</span><h3>Automation</h3><p>Jotform, monday.com and Google Apps Script workflows, plus custom AI-assisted scripts, to remove repetitive manual work.</p></div>
+        <div class="svc reveal"><span class="label">04</span><h3>Data &amp; reporting</h3><p>Weekly reports, payroll data and tracking sheets, using AI to speed up data cleanup and formula building, with every output reviewed.</p></div>
+        <div class="svc reveal"><span class="label">05</span><h3>Outreach &amp; promotion</h3><p>Creator, community and newsletter outreach, ad materials and campaign tracking for client launches.</p></div>
+        <div class="svc reveal"><span class="label">06</span><h3>Websites</h3><p>Responsive company websites in Webflow and WordPress, plus ongoing updates and maintenance.</p></div>
       </div>
     </div>
   </section>
 
-  <section class="block" aria-labelledby="h-exp">
+  <section id="experience" aria-labelledby="h-exp">
     <div class="wrap">
-      <div class="shead reveal"><span class="mono">The line so far</span><h2 id="h-exp">Experience</h2></div>
-      <div class="line">
-        <div class="fill" aria-hidden="true"></div>
-
-        <article class="stop now reveal">
-          <span class="when">08/2024<br>Present</span>
-          <h3>Technical Operations Assistant <span class="badge">Current</span></h3>
-          <div class="where">ICH Group · Surrey, Canada · Remote</div>
-          <ul>
-            <li>Built workforce management systems that 50+ employees use daily to log hours and job tickets</li>
-            <li>Create forms and workflows in Jotform, plus monday.com automations for internal processes</li>
-            <li>Prepare the weekly Customer Balance Detail revenue report for subsidiary Rapicon West</li>
-            <li>Send overdue-invoice reminders to clients using a reusable email template system</li>
-            <li>Run weekly payroll processing from operational data</li>
-            <li>Designed and built the Rapicon West website in Webflow</li>
-          </ul>
+      <div class="shead reveal"><span class="label">Experience</span><h2 id="h-exp">Where I've worked</h2></div>
+      <div class="jobs">
+        <article class="job reveal">
+          <div class="when">08/2024 – Present<br><b>Current</b></div>
+          <div>
+            <h3>Technical Operations Assistant</h3>
+            <div class="org">ICH Group · Surrey, Canada · Remote</div>
+            <ul>
+              <li>Built workforce management systems that 50+ employees use daily to log hours and job tickets</li>
+              <li>Create forms and workflows in Jotform, plus monday.com automations for internal processes</li>
+              <li>Prepare the weekly Customer Balance Detail revenue report for subsidiary Rapicon West</li>
+              <li>Send overdue-invoice reminders to clients using a reusable email template system</li>
+              <li>Run weekly payroll processing from operational data</li>
+              <li>Designed and built the Rapicon West website in Webflow</li>
+            </ul>
+          </div>
         </article>
-
-        <article class="stop now reveal">
-          <span class="when">Ongoing</span>
-          <h3>Marketing &amp; Promotion Assistant <span class="badge">Current</span></h3>
-          <div class="where">Tipsy Table · <a href="https://tipsytable.net">tipsytable.net</a> · Remote</div>
-          <ul>
-            <li>Lead promotion for a client's indie game across gaming communities and creators</li>
-            <li>Build targeted outreach lists of subreddits, content creators, Facebook groups, gaming websites and newsletters</li>
-            <li>Research and compile creator contact details for influencer outreach</li>
-            <li>Prepare advertising materials and request sponsorship quotes from creators</li>
-            <li>Submit newsletter feature applications to grow the game's visibility</li>
-          </ul>
+        <article class="job reveal">
+          <div class="when">Ongoing<br><b>Current</b></div>
+          <div>
+            <h3>Marketing &amp; Promotion Assistant</h3>
+            <div class="org">Tipsy Table · <a href="https://tipsytable.net">tipsytable.net</a> · Remote</div>
+            <ul>
+              <li>Lead promotion for a client's indie game across gaming communities and creators</li>
+              <li>Build targeted outreach lists of subreddits, content creators, Facebook groups, gaming websites and newsletters</li>
+              <li>Research and compile creator contact details for influencer outreach</li>
+              <li>Prepare advertising materials and request sponsorship quotes from creators</li>
+              <li>Submit newsletter feature applications to grow the game's visibility</li>
+            </ul>
+          </div>
         </article>
-
-        <article class="stop reveal">
-          <span class="when">11/2025<br>11/2026</span>
-          <h3>Freelance Virtual Assistant</h3>
-          <div class="where">Hoffman Legal · Florida, USA · Remote</div>
-          <ul>
-            <li>Drafted legal documents and correspondence for a US law firm</li>
-            <li>Set up and managed Google Workspace and Google Calendar for the team</li>
-            <li>Built Google Apps Script automations for repetitive admin</li>
-          </ul>
+        <article class="job reveal">
+          <div class="when">11/2025 – 11/2026</div>
+          <div>
+            <h3>Freelance Virtual Assistant</h3>
+            <div class="org">Hoffman Legal · Florida, USA · Remote</div>
+            <ul>
+              <li>Drafted legal documents and correspondence for a US law firm</li>
+              <li>Set up and managed Google Workspace and Google Calendar for the team</li>
+              <li>Built Google Apps Script automations for repetitive admin</li>
+            </ul>
+          </div>
         </article>
-
-        <article class="stop reveal">
-          <span class="when">03/2022<br>10/2023</span>
-          <h3>Trainee Software Engineer</h3>
-          <div class="where">Antler IT Solutions · Colombo</div>
-          <ul>
-            <li>Developed and modified Odoo ERP modules in Python</li>
-            <li>Used SQL to query, update and optimise database tables</li>
-            <li>Worked in Agile teams with TDD and CI/CD on tight deadlines</li>
-          </ul>
+        <article class="job reveal">
+          <div class="when">03/2022 – 10/2023</div>
+          <div>
+            <h3>Trainee Software Engineer</h3>
+            <div class="org">Antler IT Solutions · Colombo</div>
+            <ul>
+              <li>Developed and modified Odoo ERP modules in Python</li>
+              <li>Used SQL to query, update and optimise database tables</li>
+              <li>Worked in Agile teams with TDD and CI/CD on tight deadlines</li>
+            </ul>
+          </div>
         </article>
-
-        <article class="stop reveal">
-          <span class="when">03/2022<br>10/2022</span>
-          <h3>Intern Business Analyst</h3>
-          <div class="where">Antler IT Solutions · Colombo</div>
-          <ul>
-            <li>Gathered requirements and wrote Software Requirement Specifications</li>
-            <li>Designed wireframes, ran stakeholder training and User Acceptance Testing</li>
-          </ul>
+        <article class="job reveal">
+          <div class="when">03/2022 – 10/2022</div>
+          <div>
+            <h3>Intern Business Analyst</h3>
+            <div class="org">Antler IT Solutions · Colombo</div>
+            <ul>
+              <li>Gathered requirements and wrote Software Requirement Specifications</li>
+              <li>Designed wireframes, ran stakeholder training and User Acceptance Testing</li>
+            </ul>
+          </div>
         </article>
       </div>
     </div>
   </section>
 
-  <section class="block" aria-labelledby="h-proj">
+  <section id="work" aria-labelledby="h-work">
     <div class="wrap">
-      <div class="shead reveal"><span class="mono">Tickets issued</span><h2 id="h-proj">Things I've built</h2></div>
-      <div class="tickets">
-        <div class="ticket reveal">
-          <div class="top"><span>Website</span><span>No. 001</span></div>
-          <div class="body"><h3>Rapicon West</h3><p>Responsive company website built in Webflow for an ICH Group subsidiary.</p></div>
-          <div class="stub"><span>Webflow</span><a href="https://rapiconwest.com">rapiconwest.com →</a></div>
+      <div class="shead reveal"><span class="label">Selected work</span><h2 id="h-work">Things I've built</h2></div>
+      <div class="work">
+        <a class="item reveal" href="https://rapiconwest.com">
+          <span class="label">Website · Webflow</span>
+          <h3>Rapicon West</h3>
+          <p>Responsive company website for an ICH Group subsidiary, designed and built in Webflow.</p>
+          <span class="go">rapiconwest.com <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11L11 5M6 5h5v5"/></svg></span>
+        </a>
+        <div class="item reveal">
+          <span class="label">Internal system · Jotform, monday.com</span>
+          <h3>Workforce time &amp; job tickets</h3>
+          <p>Forms and automations that 50+ field and office staff use every day to log hours and job tickets.</p>
         </div>
-        <div class="ticket reveal">
-          <div class="top"><span>Internal system</span><span>No. 002</span></div>
-          <div class="body"><h3>Workforce time &amp; job tickets</h3><p>Forms and automations that 50+ field and office staff use every day.</p></div>
-          <div class="stub"><span>Jotform</span><span>monday.com</span></div>
-        </div>
-        <div class="ticket reveal">
-          <div class="top"><span>Campaign</span><span>No. 003</span></div>
-          <div class="body"><h3>Tipsy Table outreach</h3><p>Creator, community and newsletter outreach for an indie game, plus ad materials.</p></div>
-          <div class="stub"><span>Marketing</span><a href="https://tipsytable.net">tipsytable.net →</a></div>
+        <a class="item reveal" href="https://tipsytable.net">
+          <span class="label">Campaign · Marketing</span>
+          <h3>Tipsy Table outreach</h3>
+          <p>Creator, community and newsletter outreach for an indie game, plus advertising materials.</p>
+          <span class="go">tipsytable.net <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11L11 5M6 5h5v5"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-skills">
+    <div class="wrap">
+      <div class="shead reveal"><span class="label">Toolkit</span><h2 id="h-skills">Skills &amp; tools</h2></div>
+      <div class="skills">
+        <div class="reveal"><h3>Operations</h3><ul><li>Google Workspace</li><li>Gmail &amp; Calendar</li><li>monday.com</li><li>Jotform</li><li>Discord</li></ul></div>
+        <div class="reveal"><h3>Data</h3><ul><li>Google Sheets</li><li>Excel</li><li>SQL</li><li>Python</li><li>Reporting</li></ul></div>
+        <div class="reveal"><h3>Automation &amp; AI</h3><ul><li>AI tools &amp; LLMs</li><li>Prompt engineering</li><li>Google Apps Script</li><li>Odoo ERP</li></ul></div>
+        <div class="reveal"><h3>Web</h3><ul><li>Webflow</li><li>WordPress</li><li>Figma</li><li>AWS</li><li>Git</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-edu">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="label">Education</span>
+        <div class="edu">
+          <h3 id="h-edu">BSc (Hons) Information Technology</h3>
+          <div class="org">Sri Lanka Institute of Information Technology (SLIIT) · 2020 – 2024</div>
+          <p>Specialised in Data Science &amp; Analytics and Cloud Computing. Taught entirely in English, with coursework in statistics, databases and data structures, plus an industry placement.</p>
+          <p style="margin-top:12px">Languages: English (C1 written) · Sinhala (native)</p>
         </div>
       </div>
     </div>
   </section>
 
-  <div class="ticker" aria-label="Tools I use">
-    <div class="tick-inner">
-      <span>AI tools</span><span>Google Sheets</span><span>Google Workspace</span><span>Gmail</span><span>Apps Script</span><span>monday.com</span><span>Jotform</span><span>Webflow</span><span>WordPress</span><span>Discord</span><span>Figma</span><span>Python</span><span>SQL</span><span>Odoo ERP</span><span>AWS</span><span>Git</span>
-      <span aria-hidden="true">AI tools</span><span aria-hidden="true">Google Sheets</span><span aria-hidden="true">Google Workspace</span><span aria-hidden="true">Gmail</span><span aria-hidden="true">Apps Script</span><span aria-hidden="true">monday.com</span><span aria-hidden="true">Jotform</span><span aria-hidden="true">Webflow</span><span aria-hidden="true">WordPress</span><span aria-hidden="true">Discord</span><span aria-hidden="true">Figma</span><span aria-hidden="true">Python</span><span aria-hidden="true">SQL</span><span aria-hidden="true">Odoo ERP</span><span aria-hidden="true">AWS</span><span aria-hidden="true">Git</span>
-    </div>
-  </div>
-
-  <section class="block" aria-labelledby="h-edu">
+  <section id="contact" class="contact" aria-labelledby="h-contact">
     <div class="wrap">
-      <div class="shead reveal"><span class="mono">Origin station</span><h2 id="h-edu">Education</h2></div>
-      <div class="edu reveal">
-        <span class="when mono">2020 – 2024</span>
-        <div>
-          <h3>BSc (Hons) Information Technology</h3>
-          <div class="where">Sri Lanka Institute of Information Technology (SLIIT)</div>
-          <p>Specialised in Data Science &amp; Analytics and Cloud Computing. Taught entirely in English. Coursework in statistics, databases and data structures, plus an industry placement.</p>
-          <p class="mono" style="margin-top:14px">Languages: English (C1 written) · Sinhala (native)</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="contact" aria-labelledby="h-contact">
-    <div class="wrap">
-      <h2 id="h-contact">Need a reliable<br>remote assistant?</h2>
-      <p>Tell me what's slowing your team down. I usually reply within a day.</p>
-      <div class="btns">
-        <a class="btn solid" href="mailto:samodhsala88@gmail.com">Email me</a>
-        <a class="btn" href="https://www.linkedin.com/in/samodh-salwathura-021646206/">LinkedIn</a>
-        <a class="btn" href="https://discord.com/users/479310783059066882">Discord</a>
-        <button class="btn" type="button" id="copyBtn">Copy email</button>
+      <span class="label reveal">Contact</span>
+      <h2 id="h-contact" class="reveal">Need a reliable remote assistant? <em>Let's talk.</em></h2>
+      <div class="cta reveal">
+        <a class="btn" href="mailto:samodhsala88@gmail.com">Email me</a>
+        <button class="btn ghost" type="button" id="copyBtn">Copy email</button>
       </div>
       <div class="toast" id="toast" role="status" aria-live="polite"></div>
-      <div class="details">
-        <span>samodhsala88@gmail.com</span>
-        <span>Discord: @zalah88</span>
-        <span>linkedin.com/in/samodh-salwathura-021646206</span>
+      <div class="channels reveal">
+        <a href="mailto:samodhsala88@gmail.com"><span class="label">Email</span><span class="v">samodhsala88@gmail.com</span></a>
+        <a href="https://www.linkedin.com/in/samodh-salwathura-021646206/"><span class="label">LinkedIn</span><span class="v">samodh-salwathura</span></a>
+        <a href="https://discord.com/users/479310783059066882"><span class="label">Discord</span><span class="v">@zalah88</span></a>
       </div>
     </div>
   </section>
 </main>
 
-<footer class="wrap">
-  <span>© Samodh Salwathura</span>
-  <span>Galle, Sri Lanka</span>
+<footer>
+  <div class="wrap">
+    <span>© Samodh Salwathura</span>
+    <span>Galle, Sri Lanka · Working with teams in Canada, the US and beyond</span>
+  </div>
 </footer>
 
 <script>
 (function(){
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Local time in Galle
   var clock=document.getElementById('clock');
-  function tick(){
-    try{ clock.textContent=new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Colombo',hour:'2-digit',minute:'2-digit'})+' GMT+5:30'; }
-    catch(e){ clock.textContent='GMT+5:30'; }
-  }
+  function tick(){ try{ clock.textContent=new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Colombo',hour:'2-digit',minute:'2-digit'})+' local time'; }catch(e){} }
   tick(); setInterval(tick,30000);
 
-  // Split-flap departure board
-  var phrases=['Automate the boring parts','Inbox under control','Lead lists that convert','Raw data into reports','Weekly payroll, on time'];
-  var flaps=document.getElementById('flaps');
-  var label=document.getElementById('flapText');
-  var CH=' ABCDEFGHIJKLMNOPQRSTUVWXYZ,.';
-  var LEN=Math.max.apply(null,phrases.map(function(p){return p.length;}));
-  var cells=[];
-  for(var i=0;i<LEN;i++){ var c=document.createElement('span'); c.className='flap'; c.setAttribute('aria-hidden','true'); flaps.appendChild(c); cells.push(c); }
-  function setCell(c,ch){ c.textContent=ch===' '?'':ch; c.classList.toggle('sp',ch===' '); }
-  function show(text,instant){
-    text=text.toUpperCase(); label.textContent=text;
-    var padded=(text+' '.repeat(LEN)).slice(0,LEN);
-    cells.forEach(function(c,idx){
-      var target=padded[idx];
-      if(instant||reduce){ setCell(c,target); return; }
-      var cur=c.textContent||' ', steps=3+Math.floor(Math.random()*6), n=0;
-      if(cur===target){ return; }
-      setTimeout(function spin(){
-        n++;
-        var ch=n>=steps?target:CH[Math.floor(Math.random()*CH.length)];
-        setCell(c,ch); c.classList.remove('flip'); void c.offsetWidth; c.classList.add('flip');
-        if(n<steps) setTimeout(spin,55);
-      }, idx*22);
-    });
-  }
-  show(phrases[0],true);
-  if(!reduce){ var pi=0; setInterval(function(){ pi=(pi+1)%phrases.length; show(phrases[pi]); },3400); }
+  var nav=document.getElementById('nav');
+  function navState(){ nav.classList.toggle('scrolled',window.scrollY>8); }
+  window.addEventListener('scroll',navState,{passive:true}); navState();
 
-  // Count-up stats
+  var words=['running.','organised.','on schedule.','automated.'];
+  var swap=document.getElementById('swap');
+  if(swap && !reduce){
+    var i=0;
+    setInterval(function(){
+      var cur=swap.querySelector('span:not(.out)');
+      i=(i+1)%words.length;
+      var next=document.createElement('span'); next.className='in'; next.textContent=words[i];
+      swap.appendChild(next);
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ next.className=''; if(cur) cur.className='out'; }); });
+      setTimeout(function(){ if(cur&&cur.parentNode) cur.parentNode.removeChild(cur); },800);
+    },2800);
+  }
+
   if(!reduce){
     document.querySelectorAll('[data-count]').forEach(function(el){
       var end=+el.getAttribute('data-count'), suf=el.getAttribute('data-suffix')||'', t0=null;
       el.textContent='0'+suf;
-      setTimeout(function(){ requestAnimationFrame(function f(t){ if(!t0)t0=t; var k=Math.min((t-t0)/1200,1);
-        el.textContent=Math.round(end*(1-Math.pow(1-k,3)))+suf; if(k<1) requestAnimationFrame(f); }); },500);
+      setTimeout(function(){ requestAnimationFrame(function f(t){ if(!t0)t0=t; var k=Math.min((t-t0)/1300,1);
+        el.textContent=Math.round(end*(1-Math.pow(1-k,3)))+suf; if(k<1) requestAnimationFrame(f); }); },550);
     });
   }
 
-  // Scroll progress fallback
-  if(!(window.CSS&&CSS.supports&&CSS.supports('animation-timeline: scroll()')) && !reduce){
-    var train=document.getElementById('train');
-    var onScroll=function(){ var h=document.documentElement, max=h.scrollHeight-h.clientHeight; train.style.transform='scaleX('+(max>0?h.scrollTop/max:0)+')'; };
+  if(!(window.CSS&&CSS.supports&&CSS.supports('animation-timeline: scroll()'))&&!reduce){
+    var bar=document.querySelector('.progress');
+    var onScroll=function(){ var h=document.documentElement, max=h.scrollHeight-h.clientHeight; bar.style.transform='scaleX('+(max>0?h.scrollTop/max:0)+')'; };
     window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
   }
 
-  // Copy email
   var btn=document.getElementById('copyBtn'), toast=document.getElementById('toast'), email='samodhsala88@gmail.com';
   btn.addEventListener('click',function(){
     var ok=function(){toast.textContent='Email copied.';}, no=function(){toast.textContent='Copy blocked here. The email is '+email;};
