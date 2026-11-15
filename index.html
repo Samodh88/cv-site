@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Samodh Salwathura</title>
+<meta name="description" content="Samodh (Sam) Salwathura: remote technical operations assistant and virtual assistant based in Galle, Sri Lanka. Automation, data, Google Sheets and AI-powered workflows.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout: sticky ID-card sidebar on the left, a work ledger on the right; stacks to one column on phones */
+  --bg:#F2F4F1;
+  --surface:#FFFFFF;
+  --ink:#13201B;
+  --muted:#5A6A63;
+  --line:#D9E0DB;
+  --accent:#0E7A5E;
+  --accent-soft:#DDEFE8;
+  --warm:#B8641E;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1513; --surface:#151F1C; --ink:#E6EEEA; --muted:#93A59D;
+    --line:#26332E; --accent:#3CC79E; --accent-soft:#16322A; --warm:#E59A55;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1513; --surface:#151F1C; --ink:#E6EEEA; --muted:#93A59D;
+  --line:#26332E; --accent:#3CC79E; --accent-soft:#16322A; --warm:#E59A55;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+
+.wrap{max-width:1120px;margin:0 auto;padding:40px 24px 64px;display:grid;grid-template-columns:320px 1fr;gap:48px;align-items:start}
+
+/* Sidebar card */
+.card{position:sticky;top:32px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:28px;display:flex;flex-direction:column;gap:20px}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.avatar{width:72px;height:72px;border-radius:12px;background:var(--accent);color:var(--bg);display:grid;place-items:center;font:800 28px var(--display)}
+.card h1{font-size:30px;font-weight:800;letter-spacing:-.01em}
+.card .role{color:var(--muted);margin-top:6px;font-size:15px}
+.status{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;background:var(--accent-soft);color:var(--accent);padding:6px 10px;border-radius:999px;width:fit-content}
+.status i{width:8px;height:8px;border-radius:50%;background:var(--accent);display:block}
+.facts{display:grid;gap:12px;margin:0;padding:0;list-style:none;font-size:14px}
+.facts li{display:grid;grid-template-columns:84px 1fr;gap:8px}
+.facts b{font-weight:500}
+.clock{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:600 14px var(--body);padding:10px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:var(--bg);text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:hover{filter:brightness(1.08)}
+
+/* Main */
+main{display:flex;flex-direction:column;gap:56px;min-width:0}
+.intro h2{font-size:clamp(30px,4.4vw,48px);font-weight:800;letter-spacing:-.02em;max-width:18ch}
+.intro h2 em{font-style:normal;color:var(--accent)}
+.intro p{max-width:62ch;color:var(--muted);font-size:17px;margin:18px 0 0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
+.stat{border-top:2px solid var(--ink);padding-top:10px}
+.stat strong{display:block;font:800 30px var(--display);font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted)}
+
+section > .head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:22px}
+section > .head h2{font-size:24px;font-weight:700}
+
+.skills{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.skill{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
+.skill h3{font-size:17px;font-weight:700;margin-bottom:6px}
+.skill p{margin:0;font-size:14.5px;color:var(--muted)}
+
+.ai{background:var(--ink);color:var(--bg);border-radius:14px;padding:26px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+.ai .tag{font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;border:1px solid currentColor;border-radius:6px;padding:4px 8px;white-space:nowrap;color:var(--accent-soft)}
+.ai h3{font-size:22px;margin-bottom:8px}
+.ai p{margin:0;opacity:.85;max-width:60ch}
+.ai ul{margin:12px 0 0;padding-left:18px;opacity:.85}
+
+.jobs{display:flex;flex-direction:column}
+.job{display:grid;grid-template-columns:150px 1fr;gap:24px;padding:22px 0;border-bottom:1px solid var(--line)}
+.job:first-child{padding-top:0}
+.job .when{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;padding-top:3px}
+.job h3{font-size:19px;font-weight:700}
+.job .org{color:var(--accent);font-weight:500;margin:2px 0 10px;font-size:15px}
+.job ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:15px}
+.now{display:inline-block;font:500 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--accent-soft);color:var(--accent);padding:2px 6px;border-radius:4px;margin-left:8px;vertical-align:middle}
+
+.projects{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.proj{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.proj .kind{font:500 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--warm)}
+.proj h3{font-size:17px}
+.proj p{margin:0;font-size:14.5px;color:var(--muted)}
+
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+.tools span{font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+
+.edu{display:grid;grid-template-columns:150px 1fr;gap:24px}
+.edu h3{font-size:19px}
+.edu p{margin:6px 0 0;color:var(--muted);font-size:15px;max-width:62ch}
+
+.contact{background:var(--accent-soft);border-radius:14px;padding:28px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.contact h2{font-size:26px}
+.contact p{margin:6px 0 0;color:var(--muted)}
+footer{font-size:13px;color:var(--muted)}
+.toast{font-size:13px;color:var(--accent);min-height:1em}
+
+@media (max-width: 900px){
+  .wrap{grid-template-columns:1fr;gap:36px;padding-top:24px}
+  .card{position:static}
+}
+@media (max-width: 560px){
+  .skills,.projects{grid-template-columns:1fr}
+  .job,.edu{grid-template-columns:1fr;gap:6px}
+  .ai{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .stat strong{font-size:24px}
+  .wrap{padding-left:16px;padding-right:16px}
+}
+
+/* ---------- Motion ---------- */
+.progress{position:fixed;inset:0 0 auto 0;height:3px;background:var(--accent);transform-origin:0 50%;transform:scaleX(0);z-index:50}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes shimmer{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+@keyframes blink{50%{opacity:0}}
+.load{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.18s}.d3{animation-delay:.28s}.d4{animation-delay:.38s}.d5{animation-delay:.48s}
+.status i{animation:pulse 2s infinite}
+.avatar{background:linear-gradient(120deg,var(--accent),color-mix(in srgb,var(--accent) 55%,var(--warm)),var(--accent));background-size:200% 100%;animation:shimmer 6s linear infinite}
+.rot{color:var(--accent);white-space:nowrap}
+.caret{display:inline-block;width:3px;height:.9em;background:var(--accent);margin-left:4px;vertical-align:-.08em;animation:blink 1s steps(1) infinite}
+
+.skill,.proj{position:relative;overflow:hidden;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.skill::before,.proj::before{content:"";position:absolute;inset:0;background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--accent) 14%,transparent),transparent 60%);opacity:0;transition:opacity .25s ease;pointer-events:none}
+.skill:hover,.proj:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 45%,var(--line));box-shadow:0 14px 30px -18px color-mix(in srgb,var(--ink) 40%,transparent)}
+.skill:hover::before,.proj:hover::before{opacity:1}
+.skill > *,.proj > *{position:relative}
+.tools span{transition:transform .2s ease,background .2s ease,color .2s ease,border-color .2s ease}
+.tools span:hover{transform:translateY(-2px);background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.btn{transition:transform .2s ease,filter .2s ease}
+.btn:hover{transform:translateY(-2px)}
+
+.jobs{position:relative}
+.job{position:relative}
+
+@supports (animation-timeline: view()){
+  @keyframes reveal{from{opacity:0;transform:translateY(28px) scale(.985)}to{opacity:1;transform:none}}
+  .reveal{animation:reveal linear both;animation-timeline:view();animation-range:entry 0% cover 28%}
+  @keyframes grow{to{transform:scaleX(1)}}
+  .progress{animation:grow linear both;animation-timeline:scroll(root)}
+}
+@media (prefers-reduced-motion: reduce){
+  .load,.reveal,.status i,.avatar,.caret,.progress{animation:none!important}
+  .progress{display:none}
+  .skill,.proj,.tools span,.btn{transition:none!important}
+  .skill:hover,.proj:hover,.tools span:hover,.btn:hover{transform:none}
+}
+
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<div class="wrap">
+
+  <aside class="card load" aria-label="Profile">
+    <div class="avatar" aria-hidden="true">SS</div>
+    <div>
+      <h1>Samodh Salwathura</h1>
+      <div class="role">Technical Operations &amp; Virtual Assistant</div>
+    </div>
+    <span class="status"><i></i>Open to remote work</span>
+    <ul class="facts">
+      <li><span class="mono">Goes by</span><b>Sam</b></li>
+      <li><span class="mono">Based in</span><b>Galle, Sri Lanka</b></li>
+      <li><span class="mono">Local time</span><b class="clock" id="clock">GMT+5:30</b></li>
+      <li><span class="mono">Works with</span><b>Canada, USA, anywhere remote</b></li>
+      <li><span class="mono">Email</span><b><a href="mailto:samodhsala88@gmail.com">samodhsala88@gmail.com</a></b></li>
+      <li><span class="mono">Discord</span><b><a href="https://discord.com/users/479310783059066882">@zalah88</a></b></li>
+    </ul>
+    <div class="btns">
+      <a class="btn" href="mailto:samodhsala88@gmail.com">Email me</a>
+      <button class="btn ghost" type="button" id="copyBtn">Copy email</button>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </aside>
+
+  <main>
+    <section class="intro">
+      <h2 class="load d1">I keep remote teams running, and I <span class="rot" id="rot">automate the boring parts</span><span class="caret" aria-hidden="true"></span></h2>
+      <p class="load d2">Since 2024 I've handled day-to-day technical operations for a Canadian company from Sri Lanka: forms, workflows, payroll systems, reports, client emails and a company website. I'm an IT graduate with a data science background, and I use AI the right way: to speed up research, writing and automation, while I check everything it produces.</p>
+      <div class="stats load d3">
+        <div class="stat"><strong data-count="50" data-suffix="+">50+</strong><span>staff use systems I built, daily</span></div>
+        <div class="stat"><strong data-count="2" data-suffix="+ yrs">2+ yrs</strong><span>remote ops for a Canadian company</span></div>
+        <div class="stat"><strong data-count="4" data-suffix="+ yrs">4+ yrs</strong><span>in IT, from ERP code to no-code</span></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-what">
+      <div class="head"><h2 id="h-what">What I can take off your plate</h2></div>
+      <div class="skills">
+        <div class="reveal skill"><h3>Operations &amp; admin</h3><p>Inbox management, client replies, calendars and invoice reminders, with AI-assisted drafting for faster, consistent emails.</p></div>
+        <div class="reveal skill"><h3>Research &amp; lead lists</h3><p>Finding and qualifying companies and contacts with AI-assisted research, then organising them into clean, deduplicated Google Sheets.</p></div>
+        <div class="reveal skill"><h3>Automation</h3><p>Jotform, monday.com and Google Apps Script workflows, plus custom AI-assisted scripts, to remove repetitive manual work.</p></div>
+        <div class="reveal skill"><h3>Data &amp; reporting</h3><p>Weekly reports, payroll data and tracking sheets, using AI to speed up data cleanup and formula building, with every output reviewed.</p></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-exp">
+      <div class="head"><h2 id="h-exp">Experience</h2><span class="mono">Most recent first</span></div>
+      <div class="jobs">
+        <article class="reveal job">
+          <div class="when">08/2024 – now</div>
+          <div>
+            <h3>Technical Operations Assistant <span class="now">Current</span></h3>
+            <div class="org">ICH Group · Surrey, Canada · Remote</div>
+            <ul>
+              <li>Built workforce management systems that 50+ employees use daily to log hours and job tickets</li>
+              <li>Create forms and workflows in Jotform, plus monday.com automations for internal processes</li>
+              <li>Prepare the weekly Customer Balance Detail revenue report for subsidiary Rapicon West</li>
+              <li>Send overdue-invoice reminders to clients using a reusable email template system</li>
+              <li>Run weekly payroll processing from operational data</li>
+              <li>Designed and built the Rapicon West website in Webflow</li>
+            </ul>
+          </div>
+        </article>
+        <article class="reveal job">
+          <div class="when">Ongoing</div>
+          <div>
+            <h3>Marketing &amp; Promotion Assistant <span class="now">Current</span></h3>
+            <div class="org">Tipsy Table · <a href="https://tipsytable.net">tipsytable.net</a> · Remote</div>
+            <ul>
+              <li>Lead promotion for a client's indie game across gaming communities and creators</li>
+              <li>Build targeted outreach lists of subreddits, content creators, Facebook groups, gaming websites and newsletters</li>
+              <li>Research and compile creator contact details for influencer outreach</li>
+              <li>Prepare advertising materials and request sponsorship quotes from creators</li>
+              <li>Submit newsletter feature applications to grow the game's visibility</li>
+            </ul>
+          </div>
+        </article>
+        <article class="reveal job">
+          <div class="when">11/2025 – 11/2026</div>
+          <div>
+            <h3>Freelance Virtual Assistant</h3>
+            <div class="org">Hoffman Legal · Florida, USA · Remote</div>
+            <ul>
+              <li>Drafted legal documents and correspondence for a US law firm</li>
+              <li>Set up and managed Google Workspace and Google Calendar for the team</li>
+              <li>Built Google Apps Script automations for repetitive admin</li>
+            </ul>
+          </div>
+        </article>
+        <article class="reveal job">
+          <div class="when">03/2022 – 10/2023</div>
+          <div>
+            <h3>Trainee Software Engineer</h3>
+            <div class="org">Antler IT Solutions · Colombo</div>
+            <ul>
+              <li>Developed and modified Odoo ERP modules in Python</li>
+              <li>Used SQL to query, update and optimise database tables</li>
+              <li>Worked in Agile teams with TDD and CI/CD on tight deadlines</li>
+            </ul>
+          </div>
+        </article>
+        <article class="reveal job">
+          <div class="when">03/2022 – 10/2022</div>
+          <div>
+            <h3>Intern Business Analyst</h3>
+            <div class="org">Antler IT Solutions · Colombo</div>
+            <ul>
+              <li>Gathered requirements and wrote Software Requirement Specifications</li>
+              <li>Designed wireframes, ran stakeholder training and User Acceptance Testing</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-proj">
+      <div class="head"><h2 id="h-proj">Things I've built</h2></div>
+      <div class="projects">
+        <div class="reveal proj"><span class="kind">Website</span><h3>Rapicon West</h3><p>Responsive company website built in Webflow for an ICH Group subsidiary. <a href="https://rapiconwest.com">rapiconwest.com</a></p></div>
+        <div class="reveal proj"><span class="kind">Internal system</span><h3>Workforce time &amp; job tickets</h3><p>Forms and automations that 50+ field and office staff use every day.</p></div>
+        <div class="reveal proj"><span class="kind">Marketing campaign</span><h3>Tipsy Table launch outreach</h3><p>Creator, community and newsletter outreach for an indie game, plus ad materials. <a href="https://tipsytable.net">tipsytable.net</a></p></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-tools">
+      <div class="head"><h2 id="h-tools">Tools I use</h2></div>
+      <div class="tools reveal">
+        <span>AI tools</span><span>Google Sheets</span><span>Google Workspace</span><span>Gmail</span><span>Apps Script</span><span>monday.com</span><span>Jotform</span><span>Webflow</span><span>WordPress</span><span>Discord</span><span>Figma</span><span>Python</span><span>SQL</span><span>Odoo ERP</span><span>AWS</span><span>Git</span>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-edu">
+      <div class="head"><h2 id="h-edu">Education</h2></div>
+      <div class="reveal edu">
+        <div class="when mono">2020 – 2024</div>
+        <div>
+          <h3>BSc (Hons) Information Technology</h3>
+          <div class="org" style="color:var(--accent);font-weight:500">Sri Lanka Institute of Information Technology (SLIIT)</div>
+          <p>Specialised in Data Science &amp; Analytics and Cloud Computing. Taught entirely in English. Coursework in statistics, databases and data structures, plus an industry placement.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="reveal contact" aria-labelledby="h-contact">
+      <div>
+        <h2 id="h-contact">Need a reliable remote assistant?</h2>
+        <p>Email me at <b>samodhsala88@gmail.com</b>. I usually reply within a day.</p>
+      </div>
+      <a class="btn" href="mailto:samodhsala88@gmail.com">Get in touch</a>
+    </section>
+
+    <footer>Languages: English (C1 written) · Sinhala (native)</footer>
+  </main>
+</div>
+
+<script>
+(function(){
+  var el=document.getElementById('clock');
+  function tick(){
+    try{
+      var t=new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Colombo',hour:'2-digit',minute:'2-digit'});
+      el.textContent=t+' (GMT+5:30)';
+    }catch(e){el.textContent='GMT+5:30';}
+  }
+  tick(); setInterval(tick,30000);
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Rotating phrase in the headline (typed)
+  var rot=document.getElementById('rot');
+  var phrases=['automate the boring parts','keep inboxes under control','turn raw data into reports','build lead lists that convert'];
+  if(rot && !reduce){
+    var pi=0, ci=phrases[0].length, del=true, wait=2200;
+    function step(){
+      var w=phrases[pi];
+      if(del){ ci--; rot.textContent=w.slice(0,ci); if(ci===0){del=false; pi=(pi+1)%phrases.length; return setTimeout(step,300);} return setTimeout(step,28); }
+      w=phrases[pi]; ci++; rot.textContent=w.slice(0,ci);
+      if(ci===w.length){ del=true; return setTimeout(step,wait); }
+      setTimeout(step,55);
+    }
+    setTimeout(step,wait+800);
+  }
+
+  // Count-up stats on load
+  if(!reduce){
+    document.querySelectorAll('[data-count]').forEach(function(el){
+      var end=+el.getAttribute('data-count'), suf=el.getAttribute('data-suffix')||'', t0=null, dur=1200;
+      function f(t){ if(!t0)t0=t; var k=Math.min((t-t0)/dur,1), e=1-Math.pow(1-k,3);
+        el.textContent=Math.round(end*e)+suf; if(k<1) requestAnimationFrame(f); }
+      el.textContent='0'+suf; setTimeout(function(){requestAnimationFrame(f);},350);
+    });
+  }
+
+  // Cursor glow on cards
+  document.querySelectorAll('.skill,.proj').forEach(function(c){
+    c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();
+      c.style.setProperty('--mx',(e.clientX-r.left)+'px'); c.style.setProperty('--my',(e.clientY-r.top)+'px');});
+  });
+
+  // Scroll progress fallback for browsers without scroll timelines
+  if(!(window.CSS && CSS.supports && CSS.supports('animation-timeline: scroll()')) && !reduce){
+    var bar=document.getElementById('progress');
+    function onScroll(){var h=document.documentElement; var max=h.scrollHeight-h.clientHeight;
+      bar.style.transform='scaleX('+(max>0?h.scrollTop/max:0)+')';}
+    window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  }
+
+
+  var btn=document.getElementById('copyBtn'), toast=document.getElementById('toast');
+  btn.addEventListener('click',function(){
+    var email='samodhsala88@gmail.com';
+    var done=function(){toast.textContent='Email copied.';};
+    var fail=function(){toast.textContent='Copy blocked here. The email is '+email;};
+    try{
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(email).then(done,fail);}
+      else{fail();}
+    }catch(e){fail();}
+  });
+})();
+</script>
+</body>
+</html>
