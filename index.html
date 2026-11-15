@@ -72,7 +72,8 @@ p{margin:0}
 @keyframes ping{from{transform:scale(.4);opacity:.9}to{transform:scale(1.6);opacity:0}}
 .meta .label{font-variant-numeric:tabular-nums}
 .hero h1{font-family:var(--display);font-size:clamp(42px,7.4vw,96px);line-height:1.04;letter-spacing:-.015em;max-width:15ch}
-.swap{display:inline-grid;vertical-align:bottom;overflow:hidden;height:1.12em}
+.swap{display:inline-grid;vertical-align:top;overflow:hidden;line-height:inherit;height:calc(1.04em + .16em);padding-bottom:.16em;margin-bottom:-.16em;box-sizing:border-box}
+.swap span{line-height:1.04em}
 .swap span{grid-area:1/1;font-style:italic;color:var(--accent);transition:transform .7s cubic-bezier(.65,0,.35,1),opacity .7s ease;white-space:nowrap}
 .swap span.out{transform:translateY(-105%);opacity:0}
 .swap span.in{transform:translateY(105%);opacity:0}
